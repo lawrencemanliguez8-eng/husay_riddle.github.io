@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Husay Riddle</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d1321, #1d2d44);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(20, 20, 35, 0.95);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      color: gold;
+      margin-bottom: 10px;
+      font-size: 36px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #8ecae6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #2b2d42;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+    }
+
+    .green { background: #2a9d8f; color: white; }
+    .blue { background: #3a86ff; color: white; }
+    .red { background: #e63946; color: white; }
+    .gray { background: #555; color: white; }
+    .orange { background: #f4a261; color: white; }
+
+    .menu-buttons button {
+      margin-bottom: 15px;
+    }
+
+    .stats {
+      background: rgba(255,255,255,0.08);
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #8ecae6;
+    }
+
+    .riddle-box {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 15px 0;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      min-height: 25px;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      background: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    .leaderboard-item {
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: gray;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div id="loginScreen">
+      <h1>HUSAY RIDDLE</h1>
+      <h2>Welcome Back</h2>
+
+      <input type="text" id="loginUsername" placeholder="Username">
+      <input type="password" id="loginPassword" placeholder="Password">
+
+      <button class="green" onclick="login()">LOGIN</button>
+      <button class="blue" onclick="showRegister()">REGISTER</button>
+      <button class="gray" onclick="guestLogin()">PLAY AS GUEST</button>
+
+      <div class="message" id="loginMessage"></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerScreen" class="hidden">
+      <h1>CREATE ACCOUNT</h1>
+      <h2>Join the Riddle Community</h2>
+
+      <input type="text" id="regUsername" placeholder="Username">
+      <input type="password" id="regPassword" placeholder="Password">
+      <input type="password" id="regConfirm" placeholder="Confirm Password">
+
+      <button class="green" onclick="register()">REGISTER</button>
+      <button class="gray" onclick="showLogin()">BACK</button>
+
+      <div class="message" id="registerMessage"></div>
+    </div>
+
+    <!-- MENU -->
+    <div id="menuScreen" class="hidden">
+      <h1>HUSAY RIDDLE</h1>
+      <h2 id="welcomeText"></h2>
+
+      <div class="menu-buttons">
+        <button class="green" onclick="showCategory()">START GAME</button>
+        <button class="blue" onclick="showHowToPlay()">HOW TO PLAY</button>
+        <button class="orange" onclick="showLeaderboard()">LEADERBOARD</button>
+        <button class="gray" onclick="logout()">LOGOUT</button>
+      </div>
+
+      <div class="stats" id="quickStats"></div>
+    </div>
+
+    <!-- CATEGORY -->
+    <div id="categoryScreen" class="hidden">
+      <h1>SELECT CATEGORY</h1>
+
+      <button class="blue" onclick="selectCategory('English')">
+        ENGLISH RIDDLES
+      </button>
+
+      <button class="green" onclick="selectCategory('Tagalog')">
+        TAGALOG RIDDLES
+      </button>
+
+      <button class="gray" onclick="showMenu()">BACK</button>
+    </div>
+
+    <!-- DIFFICULTY -->
+    <div id="difficultyScreen" class="hidden">
+      <h1>SELECT DIFFICULTY</h1>
+
+      <button class="green" onclick="startGame('Easy')">EASY</button>
+      <button class="orange" onclick="startGame('Medium')">MEDIUM</button>
+      <button class="red" onclick="startGame('Hard')">HARD</button>
+
+      <button class="gray" onclick="showCategory()">BACK</button>
+    </div>
+
+    <!-- GAME -->
+    <div id="gameScreen" class="hidden">
+      <div class="topbar">
+        <span id="playerName"></span>
+        <span id="timer">30s</span>
+      </div>
+
+      <div class="scoreboard">
+        <div>Score: <span id="score">0</span></div>
+        <div>Level: <span id="level">1</span></div>
+      </div>
+
+      <div class="riddle-box" id="riddleQuestion"></div>
+
+      <input type="text" id="answerInput" placeholder="Type your answer...">
+
+      <button class="green" onclick="submitAnswer()">SUBMIT</button>
+      <button class="orange" onclick="showHint()">HINT</button>
+      <button class="gray" onclick="showMenu()">MENU</button>
+
+      <div class="message" id="gameMessage"></div>
+    </div>
+
+    <!-- HOW TO PLAY -->
+    <div id="howToPlayScreen" class="hidden">
+      <h1>HOW TO PLAY</h1>
+
+      <div class="stats">
+        1. Login or Register<br><br>
+        2. Choose Category and Difficulty<br><br>
+        3. Solve riddles before time runs out<br><br>
+        4. Correct answer gives points<br><br>
+        5. Hint costs points<br><br>
+        6. Reach the highest score!
+      </div>
+
+      <button class="gray" onclick="showMenu()">BACK</button>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboardScreen" class="hidden">
+      <h1>LEADERBOARD</h1>
+
+      <div id="leaderboardList"></div>
+
+      <button class="gray" onclick="showMenu()">BACK</button>
+    </div>
+
+    <div class="footer">
+      Riddle Master - Test Your Intelligence
+    </div>
+  </div>
+
+  <script>
+    let currentUser = "Guest";
+    let selectedCategory = "English";
+    let selectedDifficulty = "Easy";
+    let currentLevel = 0;
+    let score = 0;
+    let timer = 30;
+    let timerInterval;
+
+    const riddles = {
+      English: {
+        Easy: [
+          { question: "What has to be broken before you can use it?", answer: "egg", hint: "Breakfast item" },
+          { question: "What has keys but can't open locks?", answer: "piano", hint: "Musical instrument" },
+          { question: "What gets wetter as it dries?", answer: "towel", hint: "Used after shower" },
+          { question: "What has hands but cannot clap?", answer: "clock", hint: "Tells time" },
+          { question: "What has a face and two hands but no arms or legs?", answer: "clock", hint: "Found on walls" },
+          { question: "What has one eye but cannot see?", answer: "needle", hint: "Used for sewing" },
+          { question: "What goes up but never comes down?", answer: "age", hint: "Everyone has it" },
+          { question: "What can travel around the world while staying in a corner?", answer: "stamp", hint: "Found on envelopes" },
+          { question: "What has many teeth but cannot bite?", answer: "comb", hint: "Used for hair" },
+          { question: "What kind of band never plays music?", answer: "rubber band", hint: "Stretchy object" }
+        ],
+
+        Medium: [
+          { question: "What has words but never speaks?", answer: "book", hint: "Has pages" },
+          { question: "What can fill a room but takes up no space?", answer: "light", hint: "Opposite of dark" },
+          { question: "What question can you never answer yes to?", answer: "are you asleep", hint: "Asked before sleeping" },
+          { question: "What begins with T, ends with T, and has T in it?", answer: "teapot", hint: "Kitchen object" },
+          { question: "What month has 28 days?", answer: "all", hint: "Every month" },
+          { question: "What has four wheels and flies?", answer: "garbage truck", hint: "Trash vehicle" },
+          { question: "What has a neck but no head?", answer: "bottle", hint: "Holds liquid" },
+          { question: "What can run but never walks?", answer: "water", hint: "River" },
+          { question: "What building has the most stories?", answer: "library", hint: "Contains books" },
+          { question: "What can you catch but not throw?", answer: "cold", hint: "You get sick" }
+        ],
+
+        Hard: [
+          { question: "What is always in front of you but can't be seen?", answer: "future", hint: "Yet to come" },
+          { question: "The more of me there is, the less you see. What am I?", answer: "darkness", hint: "Opposite of light" },
+          { question: "I speak without a mouth and hear without ears. What am I?", answer: "echo", hint: "Repeats sound" },
+          { question: "The person who makes it does not need it. The person who buys it does not use it. What is it?", answer: "coffin", hint: "Used after death" },
+          { question: "What disappears the moment you say its name?", answer: "silence", hint: "No noise" },
+          { question: "What has cities but no houses?", answer: "map", hint: "Used for navigation" },
+          { question: "What can bring back the dead, make us cry, and make us laugh?", answer: "memories", hint: "Stored in mind" },
+          { question: "I have lakes but no water. What am I?", answer: "map", hint: "Paper guide" },
+          { question: "What comes once in a minute, twice in a moment, but never in a thousand years?", answer: "m", hint: "A letter" },
+          { question: "What is so fragile that saying its name breaks it?", answer: "silence", hint: "Quietness" }
+        ]
+      },
+
+      Tagalog: {
+        Easy: [
+          { question: "Dalawang balon, hindi malingon.", answer: "mata", hint: "Pandama" },
+          { question: "Bahay ni kapitan, hindi mabuksan.", answer: "itlog", hint: "Pagkain" },
+          { question: "Isang prinsesa, nakaupo sa tasa.", answer: "kasoy", hint: "Uri ng mani" },
+          { question: "Hindi tao, hindi hayop, kung uminom ay salup-salop.", answer: "halaman", hint: "Dinidiligan" },
+          { question: "Buto't balat lumilipad.", answer: "saranggola", hint: "Pinapalipad" },
+          { question: "Kung kailan mo pinatay, saka humaba ang buhay.", answer: "kandila", hint: "May apoy" },
+          { question: "Munting hayop na pangahas, aaligid-aligid sa ningas.", answer: "gamugamo", hint: "Insekto" },
+          { question: "May bintana walang bubong, may pinto walang hagdanan.", answer: "mukha", hint: "Parte ng katawan" },
+          { question: "Nagbibigay na, sinasaktan pa.", answer: "bubuyog", hint: "May sting" },
+          { question: "Hindi pari, hindi hari, nagsusuot ng abito sari-sari.", answer: "sampayan", hint: "Sinususpindihan ng damit" }
+        ],
+
+        Medium: [
+          { question: "Isang butil ng palay, sakop ang buong bahay.", answer: "ilaw", hint: "Nagbibigay liwanag" },
+          { question: "Baboy ko sa pulo, ang balahibo'y pako.", answer: "langka", hint: "Prutas" },
+          { question: "Maliit pa si kumpare, marunong nang umngare.", answer: "palaka", hint: "Hayop sa tubig" },
+          { question: "Hindi hari, hindi pari, ang damit ay sari-sari.", answer: "sampayan", hint: "May damit" },
+          { question: "May puno walang bunga, may dahon walang sanga.", answer: "aklat", hint: "Binabasa" },
+          { question: "Munting bahay puno ng mga patay.", answer: "posporo", hint: "May apoy" },
+          { question: "Nang sumipot sa maliwanag, kulubot na ang balat.", answer: "ampalaya", hint: "Gulay" },
+          { question: "Hindi tao, hindi ibon, kung kumanta ay nakayuko.", answer: "gitara", hint: "Instrumento" },
+          { question: "Ate mo, ate ko, ate ng lahat ng tao.", answer: "atip", hint: "Bahagi ng bahay" },
+          { question: "Mataas kung nakaupo, mababa kung nakatayo.", answer: "aso", hint: "Alagang hayop" }
+        ],
+
+        Hard: [
+          { question: "Ako ay may kaibigan, kasama ko kahit saan.", answer: "anino", hint: "Sumusunod sayo" },
+          { question: "Lumuluha walang mata, lumalakad walang paa.", answer: "ulap", hint: "Makikita sa langit" },
+          { question: "Isang hukbo ng sundalo, dikit-dikit ang ulo.", answer: "posporo", hint: "Pang-apoy" },
+          { question: "Hindi hayop, hindi tao, pumupulupot sa tiyan mo.", answer: "sinturon", hint: "Isinusuot" },
+          { question: "Maliit na bahay, puno ng buhay.", answer: "pukyutan", hint: "May pulot" },
+          { question: "May leeg walang ulo, may katawan walang paa.", answer: "bote", hint: "Sisidlan" },
+          { question: "Isang balong malalim, punong-puno ng patalim.", answer: "bibig", hint: "Parte ng mukha" },
+          { question: "Hindi naman tao, marunong magsalita.", answer: "radyo", hint: "Elektronikong gamit" },
+          { question: "Binatak ko ang baging, nagkagulo ang matsing.", answer: "kampana", hint: "Tumutunog" },
+          { question: "Dalawang magkaibigan, laging nag-uunahan.", answer: "paa", hint: "Ginagamit sa paglakad" }
+        ]
+      }
+    };
+
+    function saveUsers(users) {
+      localStorage.setItem("husayUsers", JSON.stringify(users));
+    }
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem("husayUsers")) || {};
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.container > div').forEach(div => {
+        if (!div.classList.contains('footer')) {
+          div.classList.add('hidden');
+        }
+      });
+
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function showLogin() {
+      showScreen('loginScreen');
+    }
+
+    function showRegister() {
+      showScreen('registerScreen');
+    }
+
+    function showMenu() {
+      updateQuickStats();
+      document.getElementById('welcomeText').innerText = `Welcome, ${currentUser}`;
+      showScreen('menuScreen');
+    }
+
+    function showCategory() {
+      showScreen('categoryScreen');
+    }
+
+    function showHowToPlay() {
+      showScreen('howToPlayScreen');
+    }
+
+    function showLeaderboard() {
+      const users = getUsers();
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = '';
+
+      const sorted = Object.entries(users)
+        .sort((a,b) => (b[1].highScore || 0) - (a[1].highScore || 0));
+
+      if(sorted.length === 0) {
+        list.innerHTML = '<p>No players yet!</p>';
+      }
+
+      sorted.forEach((user, index) => {
+        const div = document.createElement('div');
+        div.className = 'leaderboard-item';
+        div.innerHTML = `
+          <span>#${index + 1} ${user[0]}</span>
+          <span>${user[1].highScore || 0}</span>
+        `;
+        list.appendChild(div);
+      });
+
+      showScreen('leaderboardScreen');
+    }
+
+    function selectCategory(category) {
+      selectedCategory = category;
+      showScreen('difficultyScreen');
+    }
+
+    function register() {
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const confirm = document.getElementById('regConfirm').value.trim();
+
+      const users = getUsers();
+
+      if(username.length < 3) {
+        return showRegisterMessage('Username must be at least 3 characters', 'red');
+      }
+
+      if(password.length < 4) {
+        return showRegisterMessage('Password must be at least 4 characters', 'red');
+      }
+
+      if(password !== confirm) {
+        return showRegisterMessage('Passwords do not match', 'red');
+      }
+
+      if(users[username]) {
+        return showRegisterMessage('Username already exists', 'red');
+      }
+
+      users[username] = {
+        password,
+        highScore: 0,
+        gamesPlayed: 0
+      };
+
+      saveUsers(users);
+      showRegisterMessage('Registration successful!', 'lightgreen');
+
+      setTimeout(showLogin, 1000);
+    }
+
+    function login() {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      const users = getUsers();
+
+      if(!users[username]) {
+        return showLoginMessage('User not found', 'red');
+      }
+
+      if(users[username].password !== password) {
+        return showLoginMessage('Incorrect password', 'red');
+      }
+
+      currentUser = username;
+      showMenu();
+    }
+
+    function guestLogin() {
+      currentUser = 'Guest';
+      showMenu();
+    }
+
+    function logout() {
+      currentUser = 'Guest';
+      showLogin();
+    }
+
+    function showLoginMessage(msg, color) {
+      const el = document.getElementById('loginMessage');
+      el.innerText = msg;
+      el.style.color = color;
+    }
+
+    function showRegisterMessage(msg, color) {
+      const el = document.getElementById('registerMessage');
+      el.innerText = msg;
+      el.style.color = color;
+    }
+
+    function startGame(difficulty) {
+      selectedDifficulty = difficulty;
+      currentLevel = 0;
+      score = 0;
+      document.getElementById('score').innerText = score;
+      nextRiddle();
+      showScreen('gameScreen');
+    }
+
+    function nextRiddle() {
+      const list = riddles[selectedCategory][selectedDifficulty];
+
+      if(currentLevel >= list.length) {
+        endGame();
+        return;
+      }
+
+      const riddle = list[currentLevel];
+
+      document.getElementById('playerName').innerText = currentUser;
+      document.getElementById('level').innerText = currentLevel + 1;
+      document.getElementById('riddleQuestion').innerText = riddle.question;
+      document.getElementById('answerInput').value = '';
+      document.getElementById('gameMessage').innerText = '';
+
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timer = 30;
+      document.getElementById('timer').innerText = timer + 's';
+
+      timerInterval = setInterval(() => {
+        timer--;
+        document.getElementById('timer').innerText = timer + 's';
+
+        if(timer <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('gameMessage').innerText = 'Time is up!';
+          currentLevel++;
+
+          setTimeout(nextRiddle, 1500);
+        }
+      }, 1000);
+    }
+
+    function submitAnswer() {
+      const answer = document.getElementById('answerInput').value.trim().toLowerCase();
+      const riddle = riddles[selectedCategory][selectedDifficulty][currentLevel];
+
+      if(answer === riddle.answer.toLowerCase()) {
+        clearInterval(timerInterval);
+
+        let earned = 10 + Math.floor(timer / 2);
+        score += earned;
+
+        document.getElementById('score').innerText = score;
+        document.getElementById('gameMessage').innerText = `Correct! +${earned} points`;
+        document.getElementById('gameMessage').style.color = 'lightgreen';
+
+        currentLevel++;
+
+        setTimeout(nextRiddle, 1500);
+      } else {
+        document.getElementById('gameMessage').innerText = 'Wrong answer!';
+        document.getElementById('gameMessage').style.color = 'salmon';
+      }
+    }
+
+    function showHint() {
+      const riddle = riddles[selectedCategory][selectedDifficulty][currentLevel];
+
+      score = Math.max(0, score - 2);
+      document.getElementById('score').innerText = score;
+
+      document.getElementById('gameMessage').innerText = 'Hint: ' + riddle.hint;
+      document.getElementById('gameMessage').style.color = '#ffd166';
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+
+      const users = getUsers();
+
+      if(currentUser !== 'Guest' && users[currentUser]) {
+        users[currentUser].gamesPlayed += 1;
+
+        if(score > users[currentUser].highScore) {
+          users[currentUser].highScore = score;
+        }
+
+        saveUsers(users);
+      }
+
+      alert(`Game Finished! Your score: ${score}`);
+      showMenu();
+    }
+
+    function updateQuickStats() {
+      const users = getUsers();
+      const stats = users[currentUser];
+
+      const box = document.getElementById('quickStats');
+
+      if(currentUser === 'Guest' || !stats) {
+        box.innerHTML = 'Playing as Guest';
+        return;
+      }
+
+      box.innerHTML = `
+        <b>High Score:</b> ${stats.highScore}<br>
+        <b>Games Played:</b> ${stats.gamesPlayed}
+      `;
+    }
+  </script>
+</body>
+</html>
